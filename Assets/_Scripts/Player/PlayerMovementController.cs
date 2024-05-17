@@ -3,16 +3,17 @@ using _Scripts.Utility;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace _Scripts.Player.Movement
+namespace _Scripts.Player
 {
     /// <summary>
-    /// Resolve user input related actions
+    /// Control player movement
     /// </summary>
-    public class PlayerController : MonoBehaviour
+    public class PlayerMovementController : MonoBehaviour
     {
         #region Editor properties
 
         [Header("Setup")]
+        [SerializeField] private Transform spawnPoint;
         [SerializeField] private CharacterController characterController;
         [SerializeField] private Camera playerCamera;
         [SerializeField] private Transform groundedCheck;
@@ -43,14 +44,24 @@ namespace _Scripts.Player.Movement
         private void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
+            PlayerLifecycleController.OnPlayerReady += ResetPosition;
+            PlayerLifecycleController.OnGameReset += ResetPosition;
+            PlayerLifecycleController.OnPlayerKilled += PlayerKilled;
         }
-
+        
         private void Update()
         {
             _isGrounded = IsGrounded();
             ResolveRotation();
             ResolveMovement();
             ResolveGravity();
+        }
+
+        private void OnDestroy()
+        {
+            PlayerLifecycleController.OnPlayerReady -= ResetPosition;
+            PlayerLifecycleController.OnGameReset -= ResetPosition;
+            PlayerLifecycleController.OnPlayerKilled -= PlayerKilled;
         }
 
         #endregion
@@ -123,6 +134,29 @@ namespace _Scripts.Player.Movement
             var ray = new Ray(groundedCheck.position, groundedCheck.up);
             if (!Physics.SphereCast(ray, .75f, out var hit, 2f)) return false;
             return hit.distance < 0.4f;
+        }
+
+        #endregion
+
+        #region Lifecycle
+
+        /// <summary>
+        /// Move player to the spawnPoint
+        /// </summary>
+        private void ResetPosition()
+        {
+            transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+            enabled = true;
+        }
+        
+        private void PlayerKilled()
+        {
+            _isGrounded = true;
+            _currentLookVector = Vector3.zero;
+            _currentMoveVector = Vector3.zero;
+            _currentGravityForce = 0f;
+            _currentMoveSpeedMultiplier = 1f;
+            enabled = false;
         }
 
         #endregion
