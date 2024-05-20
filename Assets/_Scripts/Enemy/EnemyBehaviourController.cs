@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using _Scripts.Player;
 using _Scripts.World;
@@ -25,15 +24,18 @@ namespace _Scripts.Enemy
 
         private IEnumerator Start()
         {
-            PlayerLifecycleController.OnGameReset += GameReset;
-            PlayerLifecycleController.OnPlayerKilled += PlayerKilled;
-            PlayerLifecycleController.OnPlayerReady += PlayerReady;
+            CoreEvents.OnGameReset += GameReset;
+            CoreEvents.OnPlayerReady += PlayerReady;
+            CoreEvents.OnPlayerKilled += PlayerKilled;
 
             yield return null;  //wait for PrefabPooler to finish spawning
             foreach (var enemyType in enemyTypes)
             {
-                var enemy = (EnemyBase)PrefabPooler.Instance.Pool(enemyType.baseType);
-                _enemies.Add(enemy);
+                for (var e = 0; e < enemyType.count; e++)
+                {
+                    var enemy = (EnemyBase)PrefabPooler.Instance.Pool(enemyType.baseType, parent:transform);
+                    _enemies.Add(enemy);
+                }
             }
         }
 
@@ -42,9 +44,11 @@ namespace _Scripts.Enemy
             var playerTransform = PlayerLifecycleController.Instance.transform;
             foreach (var enemy in _enemies)
             {
+                if (PlayerLifecycleController.Instance.Dead) return;
                 if(!enemy.gameObject.activeSelf) continue;
+                
                 var wasVisible = enemy.playerVisible;
-                enemy.CheckForPlayer();
+                enemy.CheckForPlayer(playerTransform);
 
                 if (wasVisible != enemy.playerVisible)
                 {
@@ -65,27 +69,20 @@ namespace _Scripts.Enemy
 
         private void OnDestroy()
         {
-            PlayerLifecycleController.OnGameReset -= GameReset;
-            PlayerLifecycleController.OnPlayerKilled -= PlayerKilled;
-            PlayerLifecycleController.OnPlayerReady -= PlayerReady;
+            CoreEvents.OnGameReset -= GameReset;
+            CoreEvents.OnPlayerReady -= PlayerReady;
+            CoreEvents.OnPlayerKilled -= PlayerKilled;
         }
 
         #endregion
 
         #region Enemies lifecycle
         
-        private void PlayerKilled()
-        {
-            foreach (var enemy in _enemies)
-            {
-                enemy.OnPlayerDied();
-            }
-        }
-        
         private void GameReset()
         {
             foreach (var enemy in _enemies)
             {
+                enemy.gameObject.SetActive(true);
                 enemy.OnGameReset();
             }
         }
@@ -95,6 +92,14 @@ namespace _Scripts.Enemy
             foreach (var enemy in _enemies)
             {
                 enemy.OnReady();
+            }
+        }
+        
+        private void PlayerKilled()
+        {
+            foreach (var enemy in _enemies)
+            {
+                enemy.OnPlayerKilled();
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,7 +13,9 @@ namespace _Scripts.Enemy
 
         [Header("Setup")] 
         public NavMeshAgent agent;
-
+        [SerializeField] private float viewDistance;
+        [SerializeField] private float viewWidth;
+        
         [Header("Effects")] 
         [SerializeField] private GameObject noticedIndicator;
         [SerializeField] private GameObject escapedIndicator;
@@ -31,7 +32,9 @@ namespace _Scripts.Enemy
 
         private (Vector3, Quaternion) _startingPositionAndRotation;
 
-        private const float AnimationTime = .5f;
+        private const float AnimationTime = .2f;
+
+        private static int _priority;
         
         #endregion
 
@@ -39,7 +42,9 @@ namespace _Scripts.Enemy
 
         private void Start()
         {
+            _priority += 1;
             _startingPositionAndRotation = (transform.position, transform.rotation);
+            agent.avoidancePriority = _priority;
         }
 
         protected void OnEnable()
@@ -58,6 +63,15 @@ namespace _Scripts.Enemy
 
         public abstract void Idle();
 
+        public void OnPlayerKilled()
+        {
+            playerVisible = false;
+
+            if(!gameObject.activeSelf) return;
+            agent.isStopped = false;
+            agent.SetDestination(_startingPositionAndRotation.Item1);
+        }
+
         public virtual void OnGameReset()
         {
             transform.SetPositionAndRotation(_startingPositionAndRotation.Item1, _startingPositionAndRotation.Item2);
@@ -67,9 +81,15 @@ namespace _Scripts.Enemy
 
         #region Player
         
-        public void CheckForPlayer()
+        /// <summary>
+        /// Simple checking if player is in given a rect
+        /// </summary>
+        /// <param name="player"></param>
+        public void CheckForPlayer(Transform player)
         {
-            playerVisible = true;
+            var target = transform.InverseTransformPoint(player.position);
+            playerVisible = (target.z > 0f && target.z < viewDistance) 
+                && Mathf.Abs(target.x) < viewWidth/2f;
         }
         
         public void OnPlayerNoticed()
@@ -89,7 +109,7 @@ namespace _Scripts.Enemy
             };
         }
 
-        public virtual void OnPlayerEscaped()
+        public void OnPlayerEscaped()
         {
             noticedIndicator.SetActive(false);
             noticedIndicator.transform.DOKill();
@@ -107,11 +127,6 @@ namespace _Scripts.Enemy
         }
 
         public abstract void PlayerVisible(Transform player);
-
-        public virtual void OnPlayerDied()
-        {
-            
-        }
 
         protected void OnDeath()
         {

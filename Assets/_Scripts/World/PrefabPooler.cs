@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Scripts.Utility;
 using UnityEngine;
 
@@ -42,10 +41,12 @@ namespace _Scripts.World
         
         #region Pooling
 
-        public MonoBehaviour Pool(MonoBehaviour target)
+        public MonoBehaviour Pool(MonoBehaviour target, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), Transform parent = null)
         {
             var next = _spawnedPrefabs[target].Dequeue();
             _spawnedPrefabs[target].Enqueue(next);
+            next.transform.SetPositionAndRotation(position, rotation);
+            next.transform.SetParent(parent);
             next.gameObject.SetActive(true);
             return next;
         }

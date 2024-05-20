@@ -1,4 +1,3 @@
-using System;
 using _Scripts.Utility;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,6 +12,7 @@ namespace _Scripts.Player
         #region Editor properties
 
         [Header("Setup")]
+        [SerializeField] private PlayerInput input;
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private CharacterController characterController;
         [SerializeField] private Camera playerCamera;
@@ -44,9 +44,9 @@ namespace _Scripts.Player
         private void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
-            PlayerLifecycleController.OnPlayerReady += ResetPosition;
-            PlayerLifecycleController.OnGameReset += ResetPosition;
-            PlayerLifecycleController.OnPlayerKilled += PlayerKilled;
+            CoreEvents.OnPlayerReady += ResetPosition;
+            CoreEvents.OnGameReset += ResetPosition;
+            CoreEvents.OnPlayerKilled += PlayerKilled;
         }
         
         private void Update()
@@ -59,9 +59,9 @@ namespace _Scripts.Player
 
         private void OnDestroy()
         {
-            PlayerLifecycleController.OnPlayerReady -= ResetPosition;
-            PlayerLifecycleController.OnGameReset -= ResetPosition;
-            PlayerLifecycleController.OnPlayerKilled -= PlayerKilled;
+            CoreEvents.OnPlayerReady -= ResetPosition;
+            CoreEvents.OnGameReset -= ResetPosition;
+            CoreEvents.OnPlayerKilled -= PlayerKilled;
         }
 
         #endregion
@@ -109,7 +109,7 @@ namespace _Scripts.Player
             var input = context.ReadValue<Vector2>();
             _currentLookVector = new Vector3(-input.y, input.x);
             _currentRotation += _currentLookVector * (Time.deltaTime * lookSpeed);
-            _currentRotation = _currentRotation.ClampX(-45, 45);
+            _currentRotation = _currentRotation.ClampX(-75, 75);
         }
 
         public void OnJump(InputAction.CallbackContext context)
@@ -146,19 +146,21 @@ namespace _Scripts.Player
         private void ResetPosition()
         {
             transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+            input.ActivateInput();
             enabled = true;
         }
         
         private void PlayerKilled()
         {
+            input.DeactivateInput();
+            enabled = false;
             _isGrounded = true;
             _currentLookVector = Vector3.zero;
             _currentMoveVector = Vector3.zero;
             _currentGravityForce = 0f;
             _currentMoveSpeedMultiplier = 1f;
-            enabled = false;
         }
-
+        
         #endregion
     }
 }

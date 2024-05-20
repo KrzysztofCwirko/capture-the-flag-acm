@@ -1,5 +1,4 @@
-﻿using _Scripts.Player;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace _Scripts.Enemy.Types
 {
@@ -32,20 +31,10 @@ namespace _Scripts.Enemy.Types
         {
             agent.SetDestination(player.position);
             if (Vector3.Distance(transform.position, player.position) > kaboomTolerance) return;
-            PlayerLifecycleController.OnPlayerHit?.Invoke();
             OnDeath();
+            CoreEvents.OnPlayerHit?.Invoke();
         }
         
-        public override void OnPlayerEscaped()
-        {
-            base.OnPlayerEscaped();
-        }
-
-        public override void OnPlayerDied()
-        {
-            base.OnPlayerDied();
-        }
-
         #endregion
     }
 }

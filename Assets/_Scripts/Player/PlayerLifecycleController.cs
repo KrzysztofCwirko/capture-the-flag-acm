@@ -1,8 +1,6 @@
-﻿using System;
-using _Scripts.Utility;
+﻿using _Scripts.Utility;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace _Scripts.Player
 {
@@ -15,26 +13,16 @@ namespace _Scripts.Player
 
         [Header("Spawn")]
         [SerializeField] private float respawnTime;
-        [SerializeField] private PlayerInput input;
 
         [Header("UI - HUD")] 
         [SerializeField] private GameObject[] lives;
         
         #endregion
-
-        #region Events
-
-        public static Action OnPlayerKilled;
-        public static Action OnPlayerReady;
-        public static Action OnGameReset;
-        public static Action OnPlayerHit;
-
-        #endregion
         
         #region Private properties
 
         private int _currentLives;
-        private bool _invincible;
+        public bool Dead { get; private set; }
         private Tween _resetting;
 
         #endregion
@@ -45,17 +33,13 @@ namespace _Scripts.Player
         {
             ResetLifecycle();
 
-            OnPlayerHit += TakeHit;
-            OnPlayerKilled += PlayerKilled;
-            OnPlayerReady += PlayerReady;
+            CoreEvents.OnPlayerHit += TakeHit;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            OnPlayerHit -= TakeHit;
-            OnPlayerKilled -= PlayerKilled;
-            OnPlayerReady -= PlayerReady;
+            CoreEvents.OnPlayerHit -= TakeHit;
         }
 
         #endregion
@@ -65,26 +49,16 @@ namespace _Scripts.Player
         private void ResetLifecycle()
         {
             _resetting?.Kill();
-            OnGameReset?.Invoke();
+            CoreEvents.OnGameReset?.Invoke();
 
             _currentLives = lives.Length;
             ChangeLives(_currentLives);
-            _invincible = false;
+            Dead = false;
         }
 
         #endregion
 
         #region Lives
-        
-        private void PlayerReady()
-        {
-            input.ActivateInput();
-        }
-
-        private void PlayerKilled()
-        {
-            input.DeactivateInput();
-        }
 
         /// <summary>
         /// Change the life count
@@ -99,8 +73,8 @@ namespace _Scripts.Player
 
             if (_currentLives > newLives)
             {
-                OnPlayerKilled?.Invoke();
-                _invincible = true;
+                CoreEvents.OnPlayerKilled?.Invoke();
+                Dead = true;
                 
                 if (newLives == 0)
                 {
@@ -111,8 +85,8 @@ namespace _Scripts.Player
                     _resetting = DOTween.Sequence().AppendInterval(respawnTime);
                     _resetting.onComplete +=() =>
                     {
-                        _invincible = false;
-                        OnPlayerReady?.Invoke();
+                        Dead = false;
+                        CoreEvents.OnPlayerReady?.Invoke();
                     };
                 }
             }
@@ -122,12 +96,16 @@ namespace _Scripts.Player
 
         private void GameLost()
         {
-            ResetLifecycle();
+            _resetting = DOTween.Sequence().AppendInterval(respawnTime);
+            _resetting.onComplete +=() =>
+            {
+                ResetLifecycle();
+            };
         }
         
         private void TakeHit()
         {
-            if(_invincible) return;
+            if(Dead) return;
             ChangeLives(_currentLives-1);
         }
 
