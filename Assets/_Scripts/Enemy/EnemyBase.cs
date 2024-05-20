@@ -49,12 +49,8 @@ namespace _Scripts.Enemy
 
         protected void OnEnable()
         {
-            agent.isStopped = false;
-        }
-
-        private void OnDisable()
-        {
             transform.SetPositionAndRotation(_startingPositionAndRotation.Item1, _startingPositionAndRotation.Item2);
+            agent.isStopped = false;
         }
         
         #endregion

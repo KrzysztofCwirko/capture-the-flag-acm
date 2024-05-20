@@ -3269,6 +3269,7 @@ MonoBehaviour:
   playerVisible: 0
   idleMovingRadius: 25
   kaboomTolerance: 4
+  kaboom: {fileID: 0}
 --- !u!1 &9159731872061892804
 GameObject:
   m_ObjectHideFlags: 0

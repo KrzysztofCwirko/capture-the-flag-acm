@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using _Scripts.World;
+using UnityEngine;
 
 namespace _Scripts.Enemy.Types
 {
@@ -32,6 +33,7 @@ namespace _Scripts.Enemy.Types
             agent.SetDestination(player.position);
             if (Vector3.Distance(transform.position, player.position) > kaboomTolerance) return;
             OnDeath();
+            EffectsManager.Instance.ShowParticle("Boom", transform.position + new Vector3(0, 1.5f));
             CoreEvents.OnPlayerHit?.Invoke();
         }
         
