@@ -6,7 +6,7 @@ namespace _Scripts.Enemy.Types
     /// <summary>
     /// Chase Player and explode
     /// </summary>
-    public class Kamikaze : EnemyBase
+    public class Kamikaze : Enemy
     {
         #region Public settings
         

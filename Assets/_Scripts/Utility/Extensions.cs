@@ -23,6 +23,10 @@ namespace _Scripts.Utility
         public static Vector3 OverrideY(this Vector3 source, float y)
         {
             return new Vector3(source.x, y, source.z);
+        } 
+        public static Vector3 ModifyY(this Vector3 source, float y)
+        {
+            return new Vector3(source.x, source.y + y, source.z);
         }
     }
 }

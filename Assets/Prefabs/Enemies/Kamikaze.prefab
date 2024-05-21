@@ -235,8 +235,8 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: -15, y: 0, z: 30}
-  - {x: 15, y: 0, z: 30}
+  - {x: -5, y: 0, z: 10}
+  - {x: 5, y: 0, z: 10}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.5
@@ -514,7 +514,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9833e0a01d4bf140b1559b18cb59a46, type: 2}
+  - {fileID: 2100000, guid: b4d4da69e48e2e448b9d865bd040add2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -596,7 +596,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9833e0a01d4bf140b1559b18cb59a46, type: 2}
+  - {fileID: 2100000, guid: b4d4da69e48e2e448b9d865bd040add2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -921,7 +921,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9833e0a01d4bf140b1559b18cb59a46, type: 2}
+  - {fileID: 2100000, guid: b4d4da69e48e2e448b9d865bd040add2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1123,7 +1123,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9833e0a01d4bf140b1559b18cb59a46, type: 2}
+  - {fileID: 2100000, guid: b4d4da69e48e2e448b9d865bd040add2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1286,7 +1286,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9833e0a01d4bf140b1559b18cb59a46, type: 2}
+  - {fileID: 2100000, guid: b4d4da69e48e2e448b9d865bd040add2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1368,7 +1368,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9833e0a01d4bf140b1559b18cb59a46, type: 2}
+  - {fileID: 2100000, guid: b4d4da69e48e2e448b9d865bd040add2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1450,7 +1450,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9833e0a01d4bf140b1559b18cb59a46, type: 2}
+  - {fileID: 2100000, guid: b4d4da69e48e2e448b9d865bd040add2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1532,7 +1532,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9833e0a01d4bf140b1559b18cb59a46, type: 2}
+  - {fileID: 2100000, guid: b4d4da69e48e2e448b9d865bd040add2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1614,7 +1614,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9833e0a01d4bf140b1559b18cb59a46, type: 2}
+  - {fileID: 2100000, guid: b4d4da69e48e2e448b9d865bd040add2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3250,6 +3250,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9159731871654413404}
   - component: {fileID: 9159731871654413403}
+  - component: {fileID: 1247168439729486536}
   - component: {fileID: 9159731871654413402}
   m_Layer: 8
   m_Name: Kamikaze
@@ -3285,7 +3286,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 9159731871654413405}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 2
+  m_Radius: 1
   m_Speed: 5
   m_Acceleration: 20
   avoidancePriority: 10
@@ -3298,6 +3299,43 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 3
+--- !u!114 &1247168439729486536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9159731871654413405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ba6cb4fe6c2514485bf3dd0a3d809e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Method: 3
+  m_Curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &9159731871654413402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3311,7 +3349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 9159731871654413403}
-  viewDistance: 30
+  viewDistance: 10
   viewWidthMultiplier: 0.5
   noticedIndicator: {fileID: 9159731871365317046}
   escapedIndicator: {fileID: 9159731870583474643}
@@ -3319,7 +3357,7 @@ MonoBehaviour:
   debugSightLine: {fileID: 4559733780605463167}
   playerVisible: 0
   chaseSpeed: 15
-  idleMovingRadius: 25
+  idleMovingRadius: 5
   kaboomTolerance: 4
 --- !u!1 &9159731872061892804
 GameObject:

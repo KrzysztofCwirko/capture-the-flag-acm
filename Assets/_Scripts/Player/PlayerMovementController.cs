@@ -1,3 +1,4 @@
+using System;
 using _Scripts.Utility;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,11 +13,12 @@ namespace _Scripts.Player
         #region Editor properties
 
         [Header("Setup")]
-        [SerializeField] private PlayerInput input;
+        [SerializeField] private PlayerInput playerInput;
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private CharacterController characterController;
         [SerializeField] private Transform playerCamera;
         [SerializeField] private Transform groundedCheck;
+        [SerializeField] private Transform flagHolder;
         
         [Header("Settings")]
         [SerializeField] private float movingSpeed;
@@ -146,14 +148,14 @@ namespace _Scripts.Player
         private void ResetPosition()
         {
             transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-            input.ActivateInput();
+            playerInput.ActivateInput();
             enabled = true;
             characterController.enabled = true;
         }
         
         private void PlayerKilled()
         {
-            input.DeactivateInput();
+            playerInput.DeactivateInput();
             characterController.enabled = false;
             enabled = false;
             _isGrounded = true;
@@ -163,6 +165,27 @@ namespace _Scripts.Player
             _currentMoveSpeedMultiplier = 1f;
         }
         
+        #endregion
+
+        #region Flag
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            if(!hit.collider.CompareTag("Flag")) return;
+
+            if (flagHolder.childCount == 1)
+            {
+                //already has the Flag
+                CoreEvents.OnFlagDelivered?.Invoke();
+                return;
+            }
+            
+            CoreEvents.OnFlagTaken?.Invoke();
+            hit.transform.SetParent(flagHolder);
+            hit.transform.localPosition = Vector3.zero;
+            hit.transform.localRotation = Quaternion.identity;
+        }
+
         #endregion
     }
 }

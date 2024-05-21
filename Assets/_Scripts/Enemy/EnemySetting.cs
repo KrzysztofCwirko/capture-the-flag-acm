@@ -1,11 +1,13 @@
 ﻿using System;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Scripts.Enemy
 {
     [Serializable]
     public struct EnemySetting
     {
-        public EnemyBase baseType;
-        public int count;
+        [FormerlySerializedAs("baseType")] public Enemy type;
+        public Transform[] positions;
     }
 }

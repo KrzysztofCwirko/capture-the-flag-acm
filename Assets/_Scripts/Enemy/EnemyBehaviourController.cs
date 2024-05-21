@@ -17,7 +17,7 @@ namespace _Scripts.Enemy
 
         #region Private properties
 
-        private readonly List<EnemyBase> _enemies = new List<EnemyBase>();
+        private readonly List<Enemy> _enemies = new List<Enemy>();
 
         #endregion
         
@@ -28,13 +28,14 @@ namespace _Scripts.Enemy
             CoreEvents.OnGameReset += GameReset;
             CoreEvents.OnPlayerReady += PlayerReady;
             CoreEvents.OnPlayerKilled += PlayerKilled;
+            CoreEvents.OnFlagTaken += OnFlagTaken;
 
             yield return null;  //wait for PrefabPooler to finish spawning
             foreach (var enemyType in enemyTypes)
             {
-                for (var e = 0; e < enemyType.count; e++)
+                foreach (var spawnPosition in enemyType.positions)
                 {
-                    var enemy = (EnemyBase)PrefabPooler.Instance.Pool(enemyType.baseType, position:(Random.insideUnitSphere * 50).OverrideY(0f), parent:transform);
+                    var enemy = (Enemy)PrefabPooler.Instance.Pool(enemyType.type, spawnPosition.position,  spawnPosition.rotation, transform);
                     enemy.Init();
                     _enemies.Add(enemy);
                 }
@@ -74,6 +75,7 @@ namespace _Scripts.Enemy
             CoreEvents.OnGameReset -= GameReset;
             CoreEvents.OnPlayerReady -= PlayerReady;
             CoreEvents.OnPlayerKilled -= PlayerKilled;
+            CoreEvents.OnFlagTaken -= OnFlagTaken;
         }
 
         #endregion
@@ -103,6 +105,11 @@ namespace _Scripts.Enemy
             {
                 enemy.OnPlayerKilled();
             }
+        }
+        
+        private void OnFlagTaken()
+        {
+           
         }
 
         #endregion

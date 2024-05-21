@@ -76,6 +76,7 @@ namespace _Scripts.Player
 
             if (_currentLives > newLives)
             {
+                CoreEvents.OnFlagLost?.Invoke();
                 CoreEvents.OnPlayerKilled?.Invoke();
                 Dead = true;
                 
