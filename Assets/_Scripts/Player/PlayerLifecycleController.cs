@@ -36,18 +36,18 @@ namespace _Scripts.Player
             //wait for all enemies to start
             yield return null;
             
-            CoreEvents.OnPlayerHit += TakeHit;
-            CoreEvents.OnGameReset += ResetLifecycle;
+            GameCore.OnPlayerHit += TakeHit;
+            GameCore.OnGameReset += ResetLifecycle;
             
-            CoreEvents.OnGameReset?.Invoke();
+            GameCore.OnGameReset?.Invoke();
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             _resetting?.Kill();
-            CoreEvents.OnPlayerHit -= TakeHit;
-            CoreEvents.OnGameReset -= ResetLifecycle;
+            GameCore.OnPlayerHit -= TakeHit;
+            GameCore.OnGameReset -= ResetLifecycle;
         }
 
         #endregion
@@ -56,7 +56,7 @@ namespace _Scripts.Player
 
         private void ResetLifecycle()
         {
-            CoreEvents.GameTime = 0f;
+            GameCore.GameTime = 0f;
             _resetting?.Kill();
             _currentLives = lives.Length;
             ChangeLives(_currentLives);
@@ -80,13 +80,13 @@ namespace _Scripts.Player
 
             if (_currentLives > newLives)
             {
-                CoreEvents.OnFlagLost?.Invoke();
-                CoreEvents.OnPlayerKilled?.Invoke();
+                GameCore.OnFlagLost?.Invoke();
+                GameCore.OnPlayerKilled?.Invoke();
                 Dead = true;
                 
                 if (newLives == 0)
                 {
-                    CoreEvents.OnGameLost?.Invoke();
+                    GameCore.OnGameLost?.Invoke();
                 }
                 else
                 {
@@ -94,7 +94,7 @@ namespace _Scripts.Player
                     _resetting.onComplete +=() =>
                     {
                         Dead = false;
-                        CoreEvents.OnPlayerReady?.Invoke();
+                        GameCore.OnPlayerReady?.Invoke();
                     };
                 }
             }

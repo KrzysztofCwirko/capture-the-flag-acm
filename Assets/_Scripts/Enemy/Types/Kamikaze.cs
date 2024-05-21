@@ -54,7 +54,7 @@ namespace _Scripts.Enemy.Types
             OnDeath();
             EffectsManager.Instance.ShowParticle("Boom", transform.position + new Vector3(0, 1.5f));
             EffectsManager.Instance.MakeImpulse("Boom");
-            CoreEvents.OnPlayerHit?.Invoke();
+            GameCore.OnPlayerHit?.Invoke();
         }
         
         #endregion

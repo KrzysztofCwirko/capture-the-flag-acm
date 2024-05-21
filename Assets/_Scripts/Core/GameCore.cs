@@ -2,7 +2,7 @@
 
 namespace _Scripts.Core
 {
-    public static class CoreEvents
+    public static class GameCore
     {
         #region Events
 

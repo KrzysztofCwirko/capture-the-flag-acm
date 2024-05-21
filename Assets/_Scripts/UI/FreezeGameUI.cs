@@ -22,7 +22,7 @@ namespace _Scripts.UI
 
         public void ResetGame()
         {
-            CoreEvents.OnGameReset?.Invoke();
+            GameCore.OnGameReset?.Invoke();
             SwitchActiveSelf();
         }
 

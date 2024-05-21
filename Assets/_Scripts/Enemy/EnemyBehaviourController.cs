@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using _Scripts.Core;
 using _Scripts.Player;
-using _Scripts.Utility;
 using _Scripts.World;
 using UnityEngine;
 
@@ -26,10 +25,10 @@ namespace _Scripts.Enemy
 
         private IEnumerator Start()
         {
-            CoreEvents.OnGameReset += GameReset;
-            CoreEvents.OnPlayerReady += PlayerReady;
-            CoreEvents.OnPlayerKilled += PlayerKilled;
-            CoreEvents.OnFlagTaken += OnFlagTaken;
+            GameCore.OnGameReset += GameReset;
+            GameCore.OnPlayerReady += PlayerReady;
+            GameCore.OnPlayerKilled += PlayerKilled;
+            GameCore.OnFlagTaken += OnFlagTaken;
 
             yield return null;  //wait for PrefabPooler to finish spawning
             foreach (var enemyType in enemyTypes)
@@ -74,10 +73,10 @@ namespace _Scripts.Enemy
 
         private void OnDestroy()
         {
-            CoreEvents.OnGameReset -= GameReset;
-            CoreEvents.OnPlayerReady -= PlayerReady;
-            CoreEvents.OnPlayerKilled -= PlayerKilled;
-            CoreEvents.OnFlagTaken -= OnFlagTaken;
+            GameCore.OnGameReset -= GameReset;
+            GameCore.OnPlayerReady -= PlayerReady;
+            GameCore.OnPlayerKilled -= PlayerKilled;
+            GameCore.OnFlagTaken -= OnFlagTaken;
         }
 
         #endregion

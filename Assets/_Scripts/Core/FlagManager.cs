@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace _Scripts.Core
 {
@@ -15,18 +14,18 @@ namespace _Scripts.Core
 
         private void Start()
         { 
-            CoreEvents.OnFlagTaken += FlagTaken;
-            CoreEvents.OnFlagLost += ResetFlag;
-            CoreEvents.OnGameReset += GameReset;
-            CoreEvents.OnFlagDelivered += FlagDelivered;
+            GameCore.OnFlagTaken += FlagTaken;
+            GameCore.OnFlagLost += ResetFlag;
+            GameCore.OnGameReset += GameReset;
+            GameCore.OnFlagDelivered += FlagDelivered;
         }
 
         private void OnDestroy()
         {
-            CoreEvents.OnFlagTaken -= FlagTaken;
-            CoreEvents.OnFlagLost -= ResetFlag;
-            CoreEvents.OnGameReset -= GameReset;
-            CoreEvents.OnFlagDelivered -= FlagDelivered;
+            GameCore.OnFlagTaken -= FlagTaken;
+            GameCore.OnFlagLost -= ResetFlag;
+            GameCore.OnGameReset -= GameReset;
+            GameCore.OnFlagDelivered -= FlagDelivered;
         }
 
         #endregion

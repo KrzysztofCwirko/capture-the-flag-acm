@@ -1,4 +1,3 @@
-using System;
 using _Scripts.Core;
 using _Scripts.Utility;
 using UnityEngine;
@@ -47,15 +46,15 @@ namespace _Scripts.Player
         private void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
-            CoreEvents.OnPlayerReady += ActivateInputAndResetPosition;
-            CoreEvents.OnGameReset += GameReset;
-            CoreEvents.OnPlayerKilled += DeactivateInput;
+            GameCore.OnPlayerReady += ActivateInputAndResetPosition;
+            GameCore.OnGameReset += GameReset;
+            GameCore.OnPlayerKilled += DeactivateInput;
         }
         
         private void Update()
         {
             if(Time.timeScale <= 0.001f) return;    //paused
-            CoreEvents.GameTime += Time.deltaTime;
+            GameCore.GameTime += Time.deltaTime;
             _isGrounded = IsGrounded();
             ResolveRotation();
             ResolveMovement();
@@ -64,9 +63,9 @@ namespace _Scripts.Player
 
         private void OnDestroy()
         {
-            CoreEvents.OnPlayerReady -= ActivateInputAndResetPosition;
-            CoreEvents.OnGameReset -= GameReset;
-            CoreEvents.OnPlayerKilled -= DeactivateInput;
+            GameCore.OnPlayerReady -= ActivateInputAndResetPosition;
+            GameCore.OnGameReset -= GameReset;
+            GameCore.OnPlayerKilled -= DeactivateInput;
         }
 
         #endregion
@@ -185,11 +184,11 @@ namespace _Scripts.Player
             if (flagHolder.childCount == 1)
             {
                 //already has the Flag
-                CoreEvents.OnFlagDelivered?.Invoke();
+                GameCore.OnFlagDelivered?.Invoke();
                 return;
             }
             
-            CoreEvents.OnFlagTaken?.Invoke();
+            GameCore.OnFlagTaken?.Invoke();
             hit.transform.SetParent(flagHolder);
             hit.transform.localPosition = Vector3.zero;
             hit.transform.localRotation = Quaternion.identity;

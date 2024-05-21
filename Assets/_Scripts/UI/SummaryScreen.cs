@@ -1,9 +1,7 @@
-﻿using System;
-using _Scripts.Core;
-using _Scripts.Player;
+﻿using _Scripts.Core;
+using _Scripts.Utility;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace _Scripts.UI
@@ -19,18 +17,16 @@ namespace _Scripts.UI
 
         #region Event functions
 
-        private void Start()
+        public void Init()
         {
-            CoreEvents.OnFlagDelivered += FlagDelivered;
-            CoreEvents.OnGameLost += GameLost;
-            
-            gameObject.SetActive(false);
+            GameCore.OnFlagDelivered += FlagDelivered;
+            GameCore.OnGameLost += GameLost;
         }
 
         private void OnDestroy()
         {
-            CoreEvents.OnFlagDelivered -= FlagDelivered;
-            CoreEvents.OnGameLost -= GameLost;
+            GameCore.OnFlagDelivered -= FlagDelivered;
+            GameCore.OnGameLost -= GameLost;
         }
 
         #endregion
@@ -49,13 +45,15 @@ namespace _Scripts.UI
         {
             SwitchActiveSelf();
             resultText.text = won ? "SUCCESS" : "FAILURE";
-            var timeSpan = TimeSpan.FromSeconds(CoreEvents.GameTime);
-            timeText.text = $"Time: {timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
-
+            timeText.text = $"Time: {GameCore.GameTime.ToTime()}";
+            newHighScore.SetActive(won && GameCore.GameTime > Extensions.GetTheHighestScore().Item1);
+            
             foreach (var color in resultColors)
             {
                 color.color = won ? new Color(0f, 149/255f,1f, .8f) : new Color(1f, 23/255f, 0f, .8f);
             }
+
+            if (won) GameCore.GameTime.SaveScore();
         }
     }
 }
