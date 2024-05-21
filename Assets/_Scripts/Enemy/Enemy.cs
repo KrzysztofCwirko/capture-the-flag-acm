@@ -200,12 +200,18 @@ namespace _Scripts.Enemy
             gameObject.SetActive(false);
         }
 
-        public void OnRespawn()
+        public void OnGameReset()
         {
+            agent.isStopped = false;
+            agent.ResetPath();
+            
+            agent.enabled = false;
+            transform.SetPositionAndRotation(_startingPositionAndRotation.Item1, _startingPositionAndRotation.Item2);
+            agent.enabled = true;
+            
             _noticedDelay = 0f;
             playerVisible = false;
-            transform.SetPositionAndRotation(_startingPositionAndRotation.Item1, _startingPositionAndRotation.Item2);
-            agent.isStopped = false;
+            OnPlayerEscaped();
         }
 
         #endregion

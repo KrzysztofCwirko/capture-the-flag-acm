@@ -44,6 +44,7 @@ namespace _Scripts.Enemy
 
         private void Update()
         {
+            if(Time.timeScale <= 0.001f) return;    //paused
             var playerTransform = PlayerLifecycleController.Instance.transform;
             foreach (var enemy in _enemies)
             {
@@ -87,7 +88,7 @@ namespace _Scripts.Enemy
             foreach (var enemy in _enemies)
             {
                 enemy.gameObject.SetActive(true);
-                enemy.OnRespawn();
+                enemy.OnGameReset();
             }
         }
         

@@ -46,9 +46,9 @@ namespace _Scripts.Player
         private void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
-            CoreEvents.OnPlayerReady += ResetPosition;
-            CoreEvents.OnGameReset += ResetPosition;
-            CoreEvents.OnPlayerKilled += PlayerKilled;
+            CoreEvents.OnPlayerReady += ActivateInputAndResetPosition;
+            CoreEvents.OnGameReset += GameReset;
+            CoreEvents.OnPlayerKilled += DeactivateInput;
         }
         
         private void Update()
@@ -61,9 +61,9 @@ namespace _Scripts.Player
 
         private void OnDestroy()
         {
-            CoreEvents.OnPlayerReady -= ResetPosition;
-            CoreEvents.OnGameReset -= ResetPosition;
-            CoreEvents.OnPlayerKilled -= PlayerKilled;
+            CoreEvents.OnPlayerReady -= ActivateInputAndResetPosition;
+            CoreEvents.OnGameReset -= GameReset;
+            CoreEvents.OnPlayerKilled -= DeactivateInput;
         }
 
         #endregion
@@ -145,7 +145,7 @@ namespace _Scripts.Player
         /// <summary>
         /// Move player to the spawnPoint
         /// </summary>
-        private void ResetPosition()
+        private void ActivateInputAndResetPosition()
         {
             transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
             playerInput.ActivateInput();
@@ -153,7 +153,13 @@ namespace _Scripts.Player
             characterController.enabled = true;
         }
         
-        private void PlayerKilled()
+        private void GameReset()
+        {
+            DeactivateInput();
+            ActivateInputAndResetPosition();
+        }
+        
+        private void DeactivateInput()
         {
             playerInput.DeactivateInput();
             characterController.enabled = false;

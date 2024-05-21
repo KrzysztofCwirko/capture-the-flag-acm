@@ -35,14 +35,17 @@ namespace _Scripts.Player
             //wait for all enemies to start
             yield return null;
             
-            ResetLifecycle();
             CoreEvents.OnPlayerHit += TakeHit;
+            CoreEvents.OnGameReset += ResetLifecycle;
+            
+            CoreEvents.OnGameReset?.Invoke();
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             CoreEvents.OnPlayerHit -= TakeHit;
+            CoreEvents.OnGameReset -= ResetLifecycle;
         }
 
         #endregion
@@ -52,8 +55,6 @@ namespace _Scripts.Player
         private void ResetLifecycle()
         {
             _resetting?.Kill();
-            CoreEvents.OnGameReset?.Invoke();
-
             _currentLives = lives.Length;
             ChangeLives(_currentLives);
             Dead = false;
@@ -103,7 +104,7 @@ namespace _Scripts.Player
             _resetting = DOTween.Sequence().AppendInterval(respawnTime);
             _resetting.onComplete +=() =>
             {
-                ResetLifecycle();
+                CoreEvents.OnGameReset?.Invoke();
             };
         }
         
