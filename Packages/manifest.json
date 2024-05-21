@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.cinemachine": "2.6.17",
     "com.unity.ide.rider": "3.0.28",
     "com.unity.inputsystem": "1.5.1",
     "com.unity.postprocessing": "3.2.2",

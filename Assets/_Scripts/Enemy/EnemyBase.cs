@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,11 +15,16 @@ namespace _Scripts.Enemy
         [Header("Setup")] 
         public NavMeshAgent agent;
         [SerializeField] private float viewDistance;
-        [SerializeField] private float viewWidth;
+        [SerializeField] private float viewWidthMultiplier;
         
         [Header("Effects")] 
         [SerializeField] private GameObject noticedIndicator;
         [SerializeField] private GameObject escapedIndicator;
+
+#if UNITY_EDITOR
+        [SerializeField] private bool debugSight;
+#endif
+        [SerializeField] private LineRenderer debugSightLine;
 
         #endregion
 
@@ -33,6 +39,9 @@ namespace _Scripts.Enemy
         private (Vector3, Quaternion) _startingPositionAndRotation;
 
         private const float AnimationTime = .2f;
+        private const float NoticeDelay = 1f;
+
+        private float _noticedDelay;
 
         private static int _priority;
         
@@ -43,49 +52,68 @@ namespace _Scripts.Enemy
         private void Start()
         {
             _priority += 1;
-            _startingPositionAndRotation = (transform.position, transform.rotation);
             agent.avoidancePriority = _priority;
+
+#if UNITY_EDITOR
+            debugSightLine.positionCount = 3;
+            debugSightLine.SetPositions(new[]
+            {
+                Vector3.zero, new Vector3(-viewDistance * viewWidthMultiplier, 0f, viewDistance),
+                new Vector3(viewDistance * viewWidthMultiplier, 0f, viewDistance)
+            });
+#else
+            Destroy(debugSightLine.gameObject);
+#endif
         }
 
-        protected void OnEnable()
+#if UNITY_EDITOR
+        private void Update()
         {
-            transform.SetPositionAndRotation(_startingPositionAndRotation.Item1, _startingPositionAndRotation.Item2);
-            agent.isStopped = false;
+            debugSightLine.gameObject.SetActive(debugSight);
         }
-        
+#endif
+
+        private void OnValidate()
+        {
+            debugSightLine.gameObject.SetActive(debugSight);
+            debugSightLine.positionCount = 3;
+            debugSightLine.SetPositions(new[]
+            {
+                Vector3.zero, new Vector3(-viewDistance * viewWidthMultiplier, 0f, viewDistance),
+                new Vector3(viewDistance * viewWidthMultiplier, 0f, viewDistance)
+            });
+        }
+
         #endregion
         
         #region Lifecycle
-
-        public abstract void Idle();
-
-        public void OnPlayerKilled()
-        {
-            playerVisible = false;
-
-            if(!gameObject.activeSelf) return;
-            agent.isStopped = false;
-            agent.SetDestination(_startingPositionAndRotation.Item1);
-        }
-
-        public virtual void OnGameReset()
-        {
-            transform.SetPositionAndRotation(_startingPositionAndRotation.Item1, _startingPositionAndRotation.Item2);
-        }
-
-        #endregion
-
-        #region Player
         
-        /// <summary>
-        /// Simple checking if player is in given a rect
-        /// </summary>
-        /// <param name="player"></param>
-        public void CheckForPlayer(Transform player)
+        public void Init()
+        {
+            var transform1 = transform;
+            _startingPositionAndRotation = (transform1.position, transform1.rotation);
+                OnInit();
+        }
+        protected virtual void OnInit() {}
+        protected virtual void OnStartIdle() {}
+        public abstract void IdleLoop();
+        protected virtual void OnStartChasing() {}
+        public abstract void ChasePlayerLoop(Transform player);
+        
+        public void TryToFindPlayer(Transform player)
         {
             var target = transform.InverseTransformPoint(player.position);
-            playerVisible = (target.z > 0f && target.z < viewDistance) 
-                && Mathf.Abs(target.x) < viewWidth/2f;
+            var visible = target.z > Mathf.Abs(target.x/viewWidthMultiplier) && target.z < viewDistance;
+
+            //Small delay after losing Player from sight
+            if (playerVisible && !visible && _noticedDelay < NoticeDelay)
+            {
+                _noticedDelay += Time.deltaTime;
+                return;
+            }
+
+            _noticedDelay = 0f;
+            playerVisible = visible;
         }
         
         public void OnPlayerNoticed()
@@ -103,6 +131,8 @@ namespace _Scripts.Enemy
                     noticedIndicator.SetActive(false);
                 };
             };
+            
+            OnStartChasing();
         }
 
         public void OnPlayerEscaped()
@@ -120,13 +150,27 @@ namespace _Scripts.Enemy
                     escapedIndicator.SetActive(false);
                 };
             };
+            
+            OnStartIdle();
         }
-
-        public abstract void PlayerVisible(Transform player);
-
-        protected void OnDeath()
+        
+        public void OnPlayerReady()
+        {
+            if(!gameObject.activeSelf) return;
+            agent.isStopped = false;
+        }
+        
+        public void OnPlayerKilled()
         {
             playerVisible = false;
+
+            if(!gameObject.activeSelf) return;
+            agent.isStopped = false;
+            agent.SetDestination(_startingPositionAndRotation.Item1);
+        }
+        
+        protected void OnDeath()
+        {
             noticedIndicator.transform.DOKill();
             escapedIndicator.transform.DOKill();
             escapedIndicator.gameObject.SetActive(false);
@@ -135,9 +179,11 @@ namespace _Scripts.Enemy
             gameObject.SetActive(false);
         }
 
-        public void OnReady()
+        public void OnRespawn()
         {
-            if(!gameObject.activeSelf) return;
+            _noticedDelay = 0f;
+            playerVisible = false;
+            transform.SetPositionAndRotation(_startingPositionAndRotation.Item1, _startingPositionAndRotation.Item2);
             agent.isStopped = false;
         }
 

@@ -19,5 +19,10 @@ namespace _Scripts.Utility
         {
             return new Vector3(0f, source.y, 0f);
         }
+        
+        public static Vector3 OverrideY(this Vector3 source, float y)
+        {
+            return new Vector3(source.x, y, source.z);
+        }
     }
 }

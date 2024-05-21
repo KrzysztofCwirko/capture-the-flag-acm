@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Scripts.Utility;
+using Cinemachine;
 using UnityEngine;
 
 namespace _Scripts.World
 {
     public class EffectsManager : StaticInstance<EffectsManager>
     {
+        [SerializeField] private List<CinemachineImpulseSource> impulseSources;
         [SerializeField] private List<ParticleSystem> particleSystems;
 
         private ParticleSystem.EmitParams _emitParams;
@@ -27,6 +29,17 @@ namespace _Scripts.World
             if(particle == default) return;
             _emitParams.position = position;
             particle.Emit(_emitParams, 1);
+        }
+
+        /// <summary>
+        /// Shake the camera
+        /// </summary>
+        /// <param name="key">Name of the effect</param>
+        public void MakeImpulse(string key)
+        {
+            var impulse = impulseSources.Find(p => p.name == key);
+            if(impulse == default) return;
+            impulse.GenerateImpulse();
         }
     }
 }

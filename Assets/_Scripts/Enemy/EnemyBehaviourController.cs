@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using _Scripts.Player;
+using _Scripts.Utility;
 using _Scripts.World;
 using UnityEngine;
 
@@ -33,7 +34,8 @@ namespace _Scripts.Enemy
             {
                 for (var e = 0; e < enemyType.count; e++)
                 {
-                    var enemy = (EnemyBase)PrefabPooler.Instance.Pool(enemyType.baseType, parent:transform);
+                    var enemy = (EnemyBase)PrefabPooler.Instance.Pool(enemyType.baseType, position:(Random.insideUnitSphere * 50).OverrideY(0f), parent:transform);
+                    enemy.Init();
                     _enemies.Add(enemy);
                 }
             }
@@ -48,7 +50,7 @@ namespace _Scripts.Enemy
                 if(!enemy.gameObject.activeSelf) continue;
                 
                 var wasVisible = enemy.playerVisible;
-                enemy.CheckForPlayer(playerTransform);
+                enemy.TryToFindPlayer(playerTransform);
 
                 if (wasVisible != enemy.playerVisible)
                 {
@@ -58,11 +60,11 @@ namespace _Scripts.Enemy
                 
                 if (enemy.playerVisible)
                 {
-                    enemy.PlayerVisible(playerTransform);
+                    enemy.ChasePlayerLoop(playerTransform);
                 }
                 else
                 {
-                    enemy.Idle();
+                    enemy.IdleLoop();
                 }
             }
         }
@@ -83,7 +85,7 @@ namespace _Scripts.Enemy
             foreach (var enemy in _enemies)
             {
                 enemy.gameObject.SetActive(true);
-                enemy.OnGameReset();
+                enemy.OnRespawn();
             }
         }
         
@@ -91,7 +93,7 @@ namespace _Scripts.Enemy
         {
             foreach (var enemy in _enemies)
             {
-                enemy.OnReady();
+                enemy.OnPlayerReady();
             }
         }
         

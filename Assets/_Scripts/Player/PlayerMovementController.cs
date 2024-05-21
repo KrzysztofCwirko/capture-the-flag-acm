@@ -15,7 +15,7 @@ namespace _Scripts.Player
         [SerializeField] private PlayerInput input;
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private CharacterController characterController;
-        [SerializeField] private Camera playerCamera;
+        [SerializeField] private Transform playerCamera;
         [SerializeField] private Transform groundedCheck;
         
         [Header("Settings")]
@@ -70,7 +70,7 @@ namespace _Scripts.Player
 
         private void ResolveRotation()
         {
-            playerCamera.transform.localRotation = Quaternion.Euler(_currentRotation.OnlyX());
+            playerCamera.localRotation = Quaternion.Euler(_currentRotation.OnlyX());
             transform.eulerAngles = _currentRotation.OnlyY();
         }
 
@@ -148,11 +148,13 @@ namespace _Scripts.Player
             transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
             input.ActivateInput();
             enabled = true;
+            characterController.enabled = true;
         }
         
         private void PlayerKilled()
         {
             input.DeactivateInput();
+            characterController.enabled = false;
             enabled = false;
             _isGrounded = true;
             _currentLookVector = Vector3.zero;

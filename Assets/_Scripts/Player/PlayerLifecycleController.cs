@@ -1,4 +1,5 @@
-﻿using _Scripts.Utility;
+﻿using System.Collections;
+using _Scripts.Utility;
 using DG.Tweening;
 using UnityEngine;
 
@@ -29,10 +30,12 @@ namespace _Scripts.Player
 
         #region Event functions
 
-        private void Start()
+        private IEnumerator Start()
         {
+            //wait for all enemies to start
+            yield return null;
+            
             ResetLifecycle();
-
             CoreEvents.OnPlayerHit += TakeHit;
         }
 

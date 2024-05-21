@@ -9,31 +9,50 @@ namespace _Scripts.Enemy.Types
     public class Kamikaze : EnemyBase
     {
         #region Public settings
-
+        
+        [SerializeField] private float chaseSpeed;
         [SerializeField] private float idleMovingRadius;
         [SerializeField] private float kaboomTolerance;
         
         #endregion
-        
-        #region Lifecycle
 
-        public override void Idle()
-        {
-            if (agent.hasPath) return;
-            var newDestination = Random.onUnitSphere * idleMovingRadius;
-            agent.SetDestination(newDestination);
-        }
+        #region Private properties
+
+        private float _idleSpeed;
 
         #endregion
         
-        #region Player
+        #region Lifecycle
 
-        public override void PlayerVisible(Transform player)
+        protected override void OnInit()
+        {
+            _idleSpeed = agent.speed;
+        }
+
+        protected override void OnStartIdle()
+        {
+            agent.speed = _idleSpeed;
+        }
+
+        public override void IdleLoop()
+        {
+            if (agent.hasPath) return;
+            var newDestination = transform.position + Random.onUnitSphere * idleMovingRadius;
+            agent.SetDestination(newDestination);
+        }
+        
+        protected override void OnStartChasing()
+        {
+            agent.speed = chaseSpeed;
+        }
+
+        public override void ChasePlayerLoop(Transform player)
         {
             agent.SetDestination(player.position);
             if (Vector3.Distance(transform.position, player.position) > kaboomTolerance) return;
             OnDeath();
             EffectsManager.Instance.ShowParticle("Boom", transform.position + new Vector3(0, 1.5f));
+            EffectsManager.Instance.MakeImpulse("Boom");
             CoreEvents.OnPlayerHit?.Invoke();
         }
         
