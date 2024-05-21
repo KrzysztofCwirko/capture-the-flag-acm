@@ -1,4 +1,5 @@
-﻿using _Scripts.World;
+﻿using _Scripts.Core;
+using _Scripts.World;
 using UnityEngine;
 
 namespace _Scripts.Enemy.Types

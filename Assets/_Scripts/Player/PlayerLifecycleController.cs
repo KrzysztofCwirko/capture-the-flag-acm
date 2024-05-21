@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using _Scripts.Core;
 using _Scripts.Utility;
 using DG.Tweening;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace _Scripts.Player
         [SerializeField] private GameObject[] lives;
         
         #endregion
-        
+
         #region Private properties
 
         private int _currentLives;
@@ -44,6 +45,7 @@ namespace _Scripts.Player
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            _resetting?.Kill();
             CoreEvents.OnPlayerHit -= TakeHit;
             CoreEvents.OnGameReset -= ResetLifecycle;
         }
@@ -54,6 +56,7 @@ namespace _Scripts.Player
 
         private void ResetLifecycle()
         {
+            CoreEvents.GameTime = 0f;
             _resetting?.Kill();
             _currentLives = lives.Length;
             ChangeLives(_currentLives);
@@ -83,7 +86,7 @@ namespace _Scripts.Player
                 
                 if (newLives == 0)
                 {
-                    GameLost();
+                    CoreEvents.OnGameLost?.Invoke();
                 }
                 else
                 {
@@ -97,15 +100,6 @@ namespace _Scripts.Player
             }
             
             _currentLives = newLives;
-        }
-
-        private void GameLost()
-        {
-            _resetting = DOTween.Sequence().AppendInterval(respawnTime);
-            _resetting.onComplete +=() =>
-            {
-                CoreEvents.OnGameReset?.Invoke();
-            };
         }
         
         private void TakeHit()

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace _Scripts
+namespace _Scripts.Core
 {
     public static class CoreEvents
     {
@@ -13,7 +13,10 @@ namespace _Scripts
         public static Action OnFlagTaken;
         public static Action OnFlagLost;
         public static Action OnFlagDelivered;
+        public static Action OnGameLost;
 
         #endregion
+
+        public static float GameTime { get; set; }
     }
 }

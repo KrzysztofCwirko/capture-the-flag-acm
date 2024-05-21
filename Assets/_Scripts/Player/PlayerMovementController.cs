@@ -1,4 +1,5 @@
 using System;
+using _Scripts.Core;
 using _Scripts.Utility;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -53,6 +54,8 @@ namespace _Scripts.Player
         
         private void Update()
         {
+            if(Time.timeScale <= 0.001f) return;    //paused
+            CoreEvents.GameTime += Time.deltaTime;
             _isGrounded = IsGrounded();
             ResolveRotation();
             ResolveMovement();
