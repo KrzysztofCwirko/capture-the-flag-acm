@@ -1,6 +1,7 @@
 ﻿using _Scripts.Core;
-using _Scripts.World;
+using _Scripts.Utility;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace _Scripts.Enemy.Types
 {
@@ -38,7 +39,7 @@ namespace _Scripts.Enemy.Types
         public override void IdleLoop()
         {
             if (agent.hasPath) return;
-            var newDestination = transform.position + Random.onUnitSphere * idleMovingRadius;
+            var newDestination = transform.position.FindRandomPositionOnNavMesh(idleMovingRadius);
             agent.SetDestination(newDestination);
         }
         
@@ -51,12 +52,18 @@ namespace _Scripts.Enemy.Types
         {
             agent.SetDestination(player.position);
             if (Vector3.Distance(transform.position, player.position) > kaboomTolerance) return;
-            OnDeath();
-            EffectsManager.Instance.ShowParticle("Boom", transform.position + new Vector3(0, 1.5f));
-            EffectsManager.Instance.MakeImpulse("Boom");
             GameCore.OnPlayerHit?.Invoke();
+            KillMe();
         }
-        
+
+        internal override void KillMe()
+        {
+            base.KillMe();
+            var position = transform.position;
+            EffectsManager.Instance.ShowParticle("Boom", position + new Vector3(0, 1.5f)); 
+            GameCore.OnShakeCamera?.Invoke(position, 4f, GameCore.DefaultShakeDuration);
+        }
+
         #endregion
     }
 }

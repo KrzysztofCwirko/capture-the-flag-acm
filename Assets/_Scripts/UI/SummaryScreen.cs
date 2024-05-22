@@ -46,7 +46,7 @@ namespace _Scripts.UI
             SwitchActiveSelf();
             resultText.text = won ? "SUCCESS" : "FAILURE";
             timeText.text = $"Time: {GameCore.GameTime.ToTime()}";
-            newHighScore.SetActive(won && GameCore.GameTime > Extensions.GetTheHighestScore().Item1);
+            newHighScore.SetActive(won && GameCore.GameTime < Extensions.GetTheHighestScore().Item1);
             
             foreach (var color in resultColors)
             {

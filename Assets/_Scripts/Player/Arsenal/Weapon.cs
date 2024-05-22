@@ -8,12 +8,15 @@ namespace _Scripts.Player.Arsenal
     {
         public GameObject prefab;
         public float fireRate;
-        public bool isManual;
-        [HideInInspector] public float timeToFire;
+        public float maxDistance;
+        public Vector3 moveOnAttack;
+        public Vector3 rotateOnAttack;
+        public Transform shootingEffect;
+        public float TimeToFire { get; set; }
 
         public bool CanFire()
         {
-            return timeToFire > 1f / fireRate;
+            return TimeToFire > 1f / fireRate;
         }
     }
 }

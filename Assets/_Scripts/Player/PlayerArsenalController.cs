@@ -1,8 +1,10 @@
 using System;
+using _Scripts.Core;
 using _Scripts.Player.Arsenal;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 namespace _Scripts.Player
 {
@@ -10,9 +12,12 @@ namespace _Scripts.Player
     {
         [Header("Setup")]
         [SerializeField] private Weapon[] weapons;
+        [SerializeField] private Transform firingRoot;
 
         private int _currentWeapon;
         private bool _isFiring;
+
+        private Weapon CurrentWeapon => weapons[_currentWeapon];
 
         #region Event functions
 
@@ -25,14 +30,14 @@ namespace _Scripts.Player
         private void Update()
         {
             if(Time.timeScale <= 0.001f) return; //pause
-            weapons[_currentWeapon].timeToFire += Time.deltaTime;
+            CurrentWeapon.TimeToFire += Time.deltaTime;
             
-            if (!_isFiring || !weapons[_currentWeapon].CanFire())
+            if (!_isFiring || !CurrentWeapon.CanFire())
             {           
                 return;
             }
 
-            weapons[_currentWeapon].timeToFire = 0f;
+            CurrentWeapon.TimeToFire = 0f;
             Fire();
         }
 
@@ -40,12 +45,30 @@ namespace _Scripts.Player
 
         #region Aresnal Management
 
+        public void SetToFirst(InputAction.CallbackContext context)
+        {
+            if(!context.started) return;
+            ChangeWeapon(0);
+        }
+        
+        public void SetToSecond(InputAction.CallbackContext context)
+        {
+            if(!context.started) return;
+            ChangeWeapon(1);
+        }
+        
+        public void SetToThird(InputAction.CallbackContext context)
+        {
+            if(!context.started) return;
+            ChangeWeapon(2);
+        }
+
         private void ChangeWeapon(int target)
         {
             if(_currentWeapon == target) return;
-            weapons[_currentWeapon].prefab.SetActive(false);
+            CurrentWeapon.prefab.SetActive(false);
             _currentWeapon = target;
-            weapons[_currentWeapon].prefab.SetActive(true);
+            CurrentWeapon.prefab.SetActive(true);
         }
 
         #endregion
@@ -59,12 +82,31 @@ namespace _Scripts.Player
         
         private void Fire()
         {
-            weapons[_currentWeapon].prefab.transform.DOLocalMoveX(-0.1f, 1f/(weapons[_currentWeapon].fireRate*2f)).SetRelative(true).SetLoops(2, LoopType.Yoyo);
+            var oneDirectionDuration = 1f / (CurrentWeapon.fireRate * 2f);
+            DOTween.Sequence().Append(CurrentWeapon.prefab.transform
+                .DOLocalMove(CurrentWeapon.moveOnAttack, oneDirectionDuration
+                    )
+                .SetRelative(true).SetLoops(2, LoopType.Yoyo)).Join(CurrentWeapon.prefab.transform
+                .DOLocalRotate(CurrentWeapon.rotateOnAttack,
+                    oneDirectionDuration)
+                .SetRelative(true).SetLoops(2, LoopType.Yoyo));
 
-            if (weapons[_currentWeapon].isManual)
+            var position = firingRoot.position;
+            // GameCore.OnShakeCamera?.Invoke(position, .2f, oneDirectionDuration*2f);
+            EffectsManager.Instance.ShowParticle("Shoot",
+                firingRoot.InverseTransformPoint(CurrentWeapon.shootingEffect.position) + Random.insideUnitSphere/10f, 3);
+            
+            var ray = new Ray(position, firingRoot.forward);
+            if (!Physics.Raycast(ray, out var hit, CurrentWeapon.maxDistance))
             {
+                EffectsManager.Instance.ShowParticle("BulletMiss", ray.origin + ray.direction*CurrentWeapon.maxDistance);
                 return;
-            } 
+            }
+            EffectsManager.Instance.ShowParticle("BulletHit", hit.point + hit.normal * 0.01f, rotation:Quaternion.LookRotation(-hit.normal).eulerAngles);
+            if(!hit.collider.CompareTag("Enemy")) return;
+            //colliders on enemies are their direct children
+            var enemyHit = GameCore.GetEnemyByTransform(hit.transform.parent);
+            enemyHit.KillMe();
         }
 
         #endregion

@@ -109,9 +109,9 @@ namespace _Scripts.Enemy
             if (visible)
             {
                 //ray towards the player to see if there is something between
-                //1.5f is an offset which represents the center of a body
-                var position = myTransform.position.ModifyY(1.5f);
-                var ray = new Ray(position, (player.position.ModifyY(1.5f) - position).normalized);
+                //2.25f is an offset which represents the head level
+                var position = myTransform.position.ModifyY(2.25f);
+                var ray = new Ray(position, (player.position.ModifyY(2.25f) - position).normalized);
 
                 if (Physics.Raycast(ray, out var hit, viewDistance))
                 {
@@ -189,7 +189,7 @@ namespace _Scripts.Enemy
             agent.SetDestination(_startingPositionAndRotation.Item1);
         }
         
-        protected void OnDeath()
+        internal virtual void KillMe()
         {
             noticedIndicator.transform.DOKill();
             escapedIndicator.transform.DOKill();

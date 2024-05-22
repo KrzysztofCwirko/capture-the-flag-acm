@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace _Scripts.World
+namespace _Scripts.Core
 {
     [Serializable]
     public struct PoolSettings

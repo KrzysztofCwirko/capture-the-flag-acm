@@ -2,7 +2,7 @@
 using _Scripts.Utility;
 using UnityEngine;
 
-namespace _Scripts.World
+namespace _Scripts.Core
 {
     public class PrefabPooler : StaticInstance<PrefabPooler>
     {
@@ -30,7 +30,7 @@ namespace _Scripts.World
 
                 for (var i = 0; i <availablePrefab.count; i++)
                 {
-                    var spawn = Instantiate(availablePrefab.target);
+                    var spawn = Instantiate(availablePrefab.target, transform);
                     _spawnedPrefabs[availablePrefab.target].Enqueue(spawn);
                     spawn.gameObject.SetActive(false);
                 }

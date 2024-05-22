@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 namespace _Scripts.Utility
 {
@@ -46,7 +48,7 @@ namespace _Scripts.Utility
             return scores?.Split('|').Select(s =>
             {
                 var record = s.Split('-');
-                return (float.Parse(record[0]), record[1]);
+                return (float.Parse(record[1]), record[0]);
             }).ToList();
         }
 
@@ -79,7 +81,14 @@ namespace _Scripts.Utility
 
         public static (float,string) GetTheHighestScore()
         {
-            return GetAllScores()?.OrderByDescending(a => a.Item1).FirstOrDefault() ?? default;
+            return GetAllScores()?.OrderBy(a => a.Item1).FirstOrDefault() ?? default;
+        }
+
+        public static Vector3 FindRandomPositionOnNavMesh(this Vector3 currentPosition, float radius)
+        {
+            var randomDirection = Random.insideUnitSphere * radius;
+            randomDirection += currentPosition;
+            return NavMesh.SamplePosition(randomDirection, out var hit, radius, 1) ? hit.position : Vector3.zero;
         }
     }
 }

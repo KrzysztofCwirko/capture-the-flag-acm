@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using _Scripts.Core;
 using _Scripts.Player;
-using _Scripts.World;
+using _Scripts.Utility;
 using UnityEngine;
 
 namespace _Scripts.Enemy
 {
-    public class EnemyBehaviourController : MonoBehaviour
+    public class EnemyBehaviourController : StaticInstance<EnemyBehaviourController>
     {
         #region Public settings
 
@@ -25,6 +25,7 @@ namespace _Scripts.Enemy
 
         private IEnumerator Start()
         {
+            GameCore.GetEnemyByTransform = GetEnemyByTransform;
             GameCore.OnGameReset += GameReset;
             GameCore.OnPlayerReady += PlayerReady;
             GameCore.OnPlayerKilled += PlayerKilled;
@@ -33,9 +34,9 @@ namespace _Scripts.Enemy
             yield return null;  //wait for PrefabPooler to finish spawning
             foreach (var enemyType in enemyTypes)
             {
-                foreach (var spawnPosition in enemyType.positions)
+                foreach (Transform spawnPosition in enemyType.parent)
                 {
-                    var enemy = (Enemy)PrefabPooler.Instance.Pool(enemyType.type, spawnPosition.position,  spawnPosition.rotation, transform);
+                    var enemy = (Enemy)PrefabPooler.Instance.Pool(enemyType.type, spawnPosition.position,  spawnPosition.rotation, enemyType.parent);
                     enemy.Init();
                     _enemies.Add(enemy);
                 }
@@ -71,8 +72,9 @@ namespace _Scripts.Enemy
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             GameCore.OnGameReset -= GameReset;
             GameCore.OnPlayerReady -= PlayerReady;
             GameCore.OnPlayerKilled -= PlayerKilled;
@@ -111,6 +113,15 @@ namespace _Scripts.Enemy
         private void OnFlagTaken()
         {
            
+        }
+
+        #endregion
+
+        #region Sharing data
+
+        private Enemy GetEnemyByTransform(Transform target)
+        {
+            return _enemies.Find(e => e.transform == target);
         }
 
         #endregion

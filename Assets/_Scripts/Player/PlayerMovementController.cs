@@ -1,5 +1,6 @@
 using _Scripts.Core;
 using _Scripts.Utility;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -49,8 +50,9 @@ namespace _Scripts.Player
             GameCore.OnPlayerReady += ActivateInputAndResetPosition;
             GameCore.OnGameReset += GameReset;
             GameCore.OnPlayerKilled += DeactivateInput;
+            GameCore.OnShakeCamera += ShakeCamera;
         }
-        
+
         private void Update()
         {
             if(Time.timeScale <= 0.001f) return;    //paused
@@ -66,6 +68,7 @@ namespace _Scripts.Player
             GameCore.OnPlayerReady -= ActivateInputAndResetPosition;
             GameCore.OnGameReset -= GameReset;
             GameCore.OnPlayerKilled -= DeactivateInput;
+            GameCore.OnShakeCamera -= ShakeCamera;
         }
 
         #endregion
@@ -134,10 +137,10 @@ namespace _Scripts.Player
         private bool IsGrounded()
         {
             if (_currentGravityForce > 0.001f) return false;
-            
-            var ray = new Ray(groundedCheck.position, groundedCheck.up);
-            if (!Physics.SphereCast(ray, .75f, out var hit, 2f)) return false;
-            return hit.distance < 0.4f;
+
+            if (!Physics.SphereCast(transform.position + characterController.center, characterController.radius,
+                    Vector3.down, out var hit, characterController.height / 2f + 1f)) return false;
+            return hit.distance < groundedCheck.localPosition.y;
         }
 
         #endregion
@@ -192,6 +195,19 @@ namespace _Scripts.Player
             hit.transform.SetParent(flagHolder);
             hit.transform.localPosition = Vector3.zero;
             hit.transform.localRotation = Quaternion.identity;
+        }
+
+        #endregion
+
+        #region Camera shake
+
+        private void ShakeCamera(Vector3 source, float strength, float duration)
+        {
+            const float maxStrengthDistance = 3f;
+            var distance = Mathf.Max(Vector3.Distance(source, transform.position), maxStrengthDistance);
+            var percent = maxStrengthDistance / distance;
+            playerCamera.DOKill(true);
+            playerCamera.DOShakePosition(duration, strength * percent);
         }
 
         #endregion

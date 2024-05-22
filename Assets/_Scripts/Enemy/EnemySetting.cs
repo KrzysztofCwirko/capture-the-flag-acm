@@ -8,6 +8,6 @@ namespace _Scripts.Enemy
     public struct EnemySetting
     {
         [FormerlySerializedAs("baseType")] public Enemy type;
-        public Transform[] positions;
+        public Transform parent;
     }
 }

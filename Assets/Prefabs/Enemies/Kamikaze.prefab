@@ -235,11 +235,11 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: -5, y: 0, z: 10}
-  - {x: 5, y: 0, z: 10}
+  - {x: -20, y: 0, z: 20}
+  - {x: 20, y: 0, z: 20}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -1033,9 +1033,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6215919207303674700}
+  - component: {fileID: 4155128096161486229}
   m_Layer: 0
   m_Name: Belt
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1063,6 +1064,20 @@ Transform:
   m_Father: {fileID: 9159731871654413404}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &4155128096161486229
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6658906424241949431}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.99360275
+  m_Height: 1.9872055
+  m_Direction: 1
+  m_Center: {x: -0.04547985, y: -0.009200225, z: -8.657519e-11}
 --- !u!1 &7241896607155836641
 GameObject:
   m_ObjectHideFlags: 0
@@ -3137,9 +3152,10 @@ GameObject:
   - component: {fileID: 9159731871371836603}
   - component: {fileID: 9159731871371836601}
   - component: {fileID: 9159731871371836602}
+  - component: {fileID: 2950018286568155893}
   m_Layer: 8
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3208,6 +3224,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &2950018286568155893
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9159731871371836604}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2.0000002
+  m_Direction: 1
+  m_Center: {x: 0.00000011920929, y: -0.00000011920929, z: 0.00000023841858}
 --- !u!1 &9159731871538004307
 GameObject:
   m_ObjectHideFlags: 0
@@ -3349,15 +3379,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 9159731871654413403}
-  viewDistance: 10
-  viewWidthMultiplier: 0.5
+  viewDistance: 20
+  viewWidthMultiplier: 1
   noticedIndicator: {fileID: 9159731871365317046}
   escapedIndicator: {fileID: 9159731870583474643}
   debugSight: 0
   debugSightLine: {fileID: 4559733780605463167}
   playerVisible: 0
   chaseSpeed: 15
-  idleMovingRadius: 5
+  idleMovingRadius: 50
   kaboomTolerance: 4
 --- !u!1 &9159731872061892804
 GameObject:
