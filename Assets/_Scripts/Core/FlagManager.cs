@@ -8,7 +8,7 @@ namespace _Scripts.Core
         [SerializeField] private Transform flagPoint;
         [SerializeField] private Transform flag;
         [SerializeField] private Collider flagCollider;
-        [SerializeField] private GameObject flagIndicator;
+        [SerializeField] private Collider destinationCollider;
 
         #region Event functions
 
@@ -35,7 +35,8 @@ namespace _Scripts.Core
         private void FlagTaken()
         {
             flagCollider.enabled = false;
-            flagIndicator.SetActive(true);
+            destinationCollider.enabled = true;
+            EffectsManager.Instance.PlaySoundEffect("flag", flag.position);
         }
 
         private void GameReset()
@@ -45,17 +46,16 @@ namespace _Scripts.Core
 
         private void ResetFlag()
         {
-            flagIndicator.SetActive(false);
             flag.SetParent(flagPoint);
             flag.localPosition = Vector3.zero;
             flag.localRotation = Quaternion.identity;
             flagCollider.enabled = true;
+            destinationCollider.enabled = false;
         }
         
         private void FlagDelivered()
         {
             flagCollider.enabled = false;
-            flagIndicator.SetActive(false);
         }
 
         #endregion

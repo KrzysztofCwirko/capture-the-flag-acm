@@ -2,6 +2,7 @@
 using _Scripts.Utility;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace _Scripts.UI
@@ -13,7 +14,6 @@ namespace _Scripts.UI
         [SerializeField] private TMP_Text timeText;
         [SerializeField] private GameObject newHighScore;
         [SerializeField] private MaskableGraphic[] resultColors;
-
 
         #region Event functions
 

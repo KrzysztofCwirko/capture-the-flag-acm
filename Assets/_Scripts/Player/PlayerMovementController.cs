@@ -3,6 +3,9 @@ using _Scripts.Utility;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using DepthOfField = UnityEngine.Rendering.PostProcessing.DepthOfField;
 
 namespace _Scripts.Player
 {
@@ -26,6 +29,9 @@ namespace _Scripts.Player
         [SerializeField] private float lookSpeed;
         [SerializeField] private float jumpForce;
         [SerializeField] private float runSpeedMultiplier;
+        
+        [Header("Death")]
+        [SerializeField] private Volume volume;
         
         #endregion
 
@@ -123,6 +129,7 @@ namespace _Scripts.Player
         {   
             if(!_isGrounded || !context.started) return;
             _currentGravityForce += jumpForce;
+            EffectsManager.Instance.PlaySoundEffect("jump", transform.position);
         }
 
         public void OnRun(InputAction.CallbackContext context)
@@ -152,6 +159,11 @@ namespace _Scripts.Player
         /// </summary>
         private void ActivateInputAndResetPosition()
         {
+            if(volume.profile.TryGet(out FilmGrain grain))
+            {
+                grain.active = false;
+            }
+            
             transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
             playerInput.ActivateInput();
             enabled = true;
@@ -166,6 +178,11 @@ namespace _Scripts.Player
         
         private void DeactivateInput()
         {
+            if(volume.profile.TryGet(out FilmGrain grain))
+            {
+                grain.active = true;
+            }
+            
             playerInput.DeactivateInput();
             characterController.enabled = false;
             enabled = false;

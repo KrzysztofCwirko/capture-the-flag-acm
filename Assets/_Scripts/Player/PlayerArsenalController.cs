@@ -24,7 +24,10 @@ namespace _Scripts.Player
         private void Start()
         {
             _currentWeapon = 1;
-            ChangeWeapon(2);
+            ChangeWeapon(0);
+
+            GameCore.OnPlayerKilled += PlayerKilled;
+            GameCore.OnPlayerReady += PlayerReady;
         }
 
         private void Update()
@@ -39,6 +42,12 @@ namespace _Scripts.Player
 
             CurrentWeapon.TimeToFire = 0f;
             Fire();
+        }
+
+        private void OnDestroy()
+        {
+            GameCore.OnPlayerKilled -= PlayerKilled;
+            GameCore.OnPlayerReady -= PlayerReady;
         }
 
         #endregion
@@ -90,11 +99,14 @@ namespace _Scripts.Player
                 .DOLocalRotate(CurrentWeapon.rotateOnAttack,
                     oneDirectionDuration)
                 .SetRelative(true).SetLoops(2, LoopType.Yoyo));
+            
 
             var position = firingRoot.position;
+            EffectsManager.Instance.PlaySoundEffect(CurrentWeapon.shootingClipName, position);
+            
             // GameCore.OnShakeCamera?.Invoke(position, .2f, oneDirectionDuration*2f);
             EffectsManager.Instance.ShowParticle("Shoot",
-                firingRoot.InverseTransformPoint(CurrentWeapon.shootingEffect.position) + Random.insideUnitSphere/10f, 3);
+                firingRoot.InverseTransformPoint(CurrentWeapon.shootingParticlePosition.position) + Random.insideUnitSphere/10f, 3);
             
             var ray = new Ray(position, firingRoot.forward);
             if (!Physics.Raycast(ray, out var hit, CurrentWeapon.maxDistance))
@@ -107,6 +119,20 @@ namespace _Scripts.Player
             //colliders on enemies are their direct children
             var enemyHit = GameCore.GetEnemyByTransform(hit.transform.parent);
             enemyHit.KillMe();
+        }
+
+        #endregion
+
+        #region Lifecycle
+
+        private void PlayerReady()
+        {
+           CurrentWeapon.prefab.SetActive(true);
+        }
+
+        private void PlayerKilled()
+        {
+            CurrentWeapon.prefab.SetActive(false);
         }
 
         #endregion

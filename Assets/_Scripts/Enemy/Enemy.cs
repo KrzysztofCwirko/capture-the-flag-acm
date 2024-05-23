@@ -180,7 +180,7 @@ namespace _Scripts.Enemy
             agent.isStopped = false;
         }
         
-        public void OnPlayerKilled()
+        public virtual void OnPlayerKilled()
         {
             playerVisible = false;
 

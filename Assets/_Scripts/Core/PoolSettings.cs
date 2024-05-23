@@ -6,7 +6,7 @@ namespace _Scripts.Core
     [Serializable]
     public struct PoolSettings
     {
-        public MonoBehaviour target;
+        public Behaviour target;
         public int count;
     }
 }

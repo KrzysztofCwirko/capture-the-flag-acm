@@ -33,6 +33,7 @@ namespace _Scripts.Enemy.Types
 
         protected override void OnStartIdle()
         {
+            EffectsManager.Instance.ClearSoundEffect("scream", transform);
             agent.speed = _idleSpeed;
         }
 
@@ -44,7 +45,9 @@ namespace _Scripts.Enemy.Types
         }
         
         protected override void OnStartChasing()
-        {
+        {        
+            var transform1 = transform;
+            EffectsManager.Instance.PlaySoundEffect("scream", transform1.position, transform1, volume:15f);
             agent.speed = chaseSpeed;
         }
 
@@ -56,10 +59,18 @@ namespace _Scripts.Enemy.Types
             KillMe();
         }
 
+        public override void OnPlayerKilled()
+        {
+            base.OnPlayerKilled();
+            EffectsManager.Instance.ClearSoundEffect("scream", transform);
+        }
+
         internal override void KillMe()
         {
             base.KillMe();
+            EffectsManager.Instance.ClearSoundEffect("scream", transform);
             var position = transform.position;
+            EffectsManager.Instance.PlaySoundEffect("Boom", position, volume:15f);
             EffectsManager.Instance.ShowParticle("Boom", position + new Vector3(0, 1.5f)); 
             GameCore.OnShakeCamera?.Invoke(position, 4f, GameCore.DefaultShakeDuration);
         }

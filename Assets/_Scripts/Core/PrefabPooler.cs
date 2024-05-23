@@ -15,8 +15,8 @@ namespace _Scripts.Core
 
         #region Private properties
 
-        private readonly Dictionary<MonoBehaviour, Queue<MonoBehaviour>> _spawnedPrefabs =
-            new Dictionary<MonoBehaviour, Queue<MonoBehaviour>>();
+        private readonly Dictionary<Behaviour, Queue<Behaviour>> _spawnedPrefabs =
+            new Dictionary<Behaviour, Queue<Behaviour>>();
 
         #endregion
 
@@ -26,7 +26,7 @@ namespace _Scripts.Core
         {
             foreach (var availablePrefab in availablePrefabs)
             {
-                _spawnedPrefabs.Add(availablePrefab.target, new Queue<MonoBehaviour>());
+                _spawnedPrefabs.Add(availablePrefab.target, new Queue<Behaviour>());
 
                 for (var i = 0; i <availablePrefab.count; i++)
                 {
@@ -41,7 +41,7 @@ namespace _Scripts.Core
         
         #region Pooling
 
-        public MonoBehaviour Pool(MonoBehaviour target, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), Transform parent = null)
+        public Behaviour Pool(Behaviour target, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), Transform parent = null)
         {
             var next = _spawnedPrefabs[target].Dequeue();
             _spawnedPrefabs[target].Enqueue(next);

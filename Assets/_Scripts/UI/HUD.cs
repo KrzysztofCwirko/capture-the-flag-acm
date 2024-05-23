@@ -12,6 +12,7 @@ namespace _Scripts.UI
         [SerializeField] private TMP_Text playerName;
         [SerializeField] private TMP_Text time;
         [SerializeField] private MaskableGraphic flagIcon;
+        [SerializeField] private MaskableGraphic flagHolder;
         [SerializeField] private SummaryScreen summaryScreen;
 
         #region Event functions
@@ -21,9 +22,10 @@ namespace _Scripts.UI
             summaryScreen.Init();
             playerName.text = PlayerPrefs.GetString("PlayerName", "Bestia");
             time.text = "00:00:00";
-            flagIcon.color = Color.grey;
-            
+ 
+            FlagLost();
             GameCore.OnFlagTaken += FlagTaken;
+            GameCore.OnGameReset += FlagLost;
             GameCore.OnFlagLost += FlagLost;
         }
 
@@ -36,6 +38,7 @@ namespace _Scripts.UI
         {
             GameCore.OnFlagTaken -= FlagTaken;
             GameCore.OnFlagLost -= FlagLost;
+            GameCore.OnGameReset -= FlagLost;
         }
 
         #endregion
@@ -43,11 +46,13 @@ namespace _Scripts.UI
         private void FlagLost()
         {
             flagIcon.color = Color.grey;
+            flagHolder.color = Color.white;
         }
 
         private void FlagTaken()
         {
-            flagIcon.color = new Color(0f, 149 / 255f, 1f);
+            flagIcon.color = Color.white;
+            flagHolder.color =  Color.red;
         }
     }
 }

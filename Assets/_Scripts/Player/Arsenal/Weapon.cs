@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Scripts.Player.Arsenal
 {
@@ -11,7 +12,8 @@ namespace _Scripts.Player.Arsenal
         public float maxDistance;
         public Vector3 moveOnAttack;
         public Vector3 rotateOnAttack;
-        public Transform shootingEffect;
+        public Transform shootingParticlePosition;
+        public string shootingClipName;
         public float TimeToFire { get; set; }
 
         public bool CanFire()

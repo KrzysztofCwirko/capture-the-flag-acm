@@ -3,6 +3,7 @@ using _Scripts.Core;
 using _Scripts.Utility;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace _Scripts.Player
 {
@@ -60,6 +61,7 @@ namespace _Scripts.Player
             _resetting?.Kill();
             _currentLives = lives.Length;
             ChangeLives(_currentLives);
+            GameCore.OnPlayerReady?.Invoke();
             Dead = false;
         }
 
@@ -105,6 +107,7 @@ namespace _Scripts.Player
         private void TakeHit()
         {
             if(Dead) return;
+            EffectsManager.Instance.PlaySoundEffect("dead", transform.position);
             ChangeLives(_currentLives-1);
         }
 
