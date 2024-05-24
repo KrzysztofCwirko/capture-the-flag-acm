@@ -71,7 +71,6 @@ namespace _Scripts.Enemy
         {
             debugSightLine.gameObject.SetActive(debugSight);
         }
-#endif
 
         private void OnValidate()
         {
@@ -83,6 +82,7 @@ namespace _Scripts.Enemy
                 new Vector3(viewDistance * viewWidthMultiplier, 0f, viewDistance)
             });
         }
+#endif
 
         #endregion
         
