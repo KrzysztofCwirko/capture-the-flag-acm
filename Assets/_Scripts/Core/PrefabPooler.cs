@@ -28,7 +28,7 @@ namespace _Scripts.Core
             {
                 _spawnedPrefabs.Add(availablePrefab.target, new Queue<Behaviour>());
 
-                for (var i = 0; i <availablePrefab.count; i++)
+                for (var i = 0; i < availablePrefab.count; i++)
                 {
                     var spawn = Instantiate(availablePrefab.target, transform);
                     _spawnedPrefabs[availablePrefab.target].Enqueue(spawn);

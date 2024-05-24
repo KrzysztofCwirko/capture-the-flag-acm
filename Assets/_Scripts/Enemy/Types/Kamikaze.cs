@@ -1,7 +1,6 @@
 ﻿using _Scripts.Core;
 using _Scripts.Utility;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace _Scripts.Enemy.Types
 {

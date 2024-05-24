@@ -1,4 +1,5 @@
 ﻿using _Scripts.Core;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,16 +13,24 @@ namespace _Scripts.UI
         {
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.None;
+            GameCore.OnPlayerKilled += PlayerKilled;
         }
-
+        
         private void OnDisable()
         {
             Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.Locked;
+            GameCore.OnPlayerKilled -= PlayerKilled;
+        }
+        
+        private void PlayerKilled()
+        {
+            SwitchActiveSelf(); //Summary will pop-in anyway, OnGameLost is invoked after OnPlayerKilled
         }
 
         public void ResetGame()
         {
+            DOTween.KillAll();
             GameCore.OnGameReset?.Invoke();
             SwitchActiveSelf();
         }
@@ -37,6 +46,7 @@ namespace _Scripts.UI
         
         public void GoToMainMenu()
         {
+            DOTween.KillAll();
             SceneManager.LoadSceneAsync("Menu");
         }
     }

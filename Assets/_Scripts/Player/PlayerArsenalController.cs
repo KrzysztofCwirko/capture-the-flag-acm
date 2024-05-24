@@ -1,4 +1,3 @@
-using System;
 using _Scripts.Core;
 using _Scripts.Player.Arsenal;
 using DG.Tweening;
@@ -32,7 +31,7 @@ namespace _Scripts.Player
 
         private void Update()
         {
-            if(Time.timeScale <= 0.001f) return; //pause
+            if(GameCore.GamePaused) return;
             CurrentWeapon.TimeToFire += Time.deltaTime;
             
             if (!_isFiring || !CurrentWeapon.CanFire())

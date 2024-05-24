@@ -3,7 +3,6 @@ using _Scripts.Core;
 using _Scripts.Utility;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace _Scripts.Player
 {

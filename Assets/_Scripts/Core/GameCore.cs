@@ -23,8 +23,13 @@ namespace _Scripts.Core
         #endregion
 
         public static float GameTime { get; set; }
-
+        public static string PlayerName
+        {
+            get => PlayerPrefs.GetString("PlayerName", "No name");
+            set => PlayerPrefs.SetString("PlayerName", string.IsNullOrEmpty(value) ? "No name" : value);
+        }
         public static Func<Transform, Enemy.Enemy> GetEnemyByTransform { get; set; }
         public const float DefaultShakeDuration = 0.3f;
+        public static bool GamePaused => Time.timeScale < 0.001f;
     }
 }

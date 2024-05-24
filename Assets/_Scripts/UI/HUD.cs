@@ -20,7 +20,7 @@ namespace _Scripts.UI
         private void Start()
         {
             summaryScreen.Init();
-            playerName.text = PlayerPrefs.GetString("PlayerName", "Bestia");
+            playerName.text = GameCore.PlayerName;
             time.text = "00:00:00";
  
             FlagLost();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using _Scripts.Core;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -26,10 +27,6 @@ namespace _Scripts.Utility
             return new Vector3(0f, source.y, 0f);
         }
         
-        public static Vector3 OverrideY(this Vector3 source, float y)
-        {
-            return new Vector3(source.x, y, source.z);
-        } 
         public static Vector3 ModifyY(this Vector3 source, float y)
         {
             return new Vector3(source.x, source.y + y, source.z);
@@ -49,7 +46,7 @@ namespace _Scripts.Utility
             {
                 var record = s.Split('-');
                 return (float.Parse(record[1]), record[0]);
-            }).ToList();
+            }).OrderBy(a => a.Item1).ToList();
         }
 
         private static string GetRawScores()
@@ -76,12 +73,12 @@ namespace _Scripts.Utility
 
             var all = GetRawScores() ?? string.Empty;
             var separator = all == string.Empty ? string.Empty : "|";
-            File.WriteAllText(Path.Combine(path,  "results.txt"), all + $"{separator}{PlayerPrefs.GetString("PlayerName", "Bestia")}-{score}");
+            File.WriteAllText(Path.Combine(path,  "results.txt"), all + $"{separator}{GameCore.PlayerName}-{score}");
     }
 
         public static (float,string) GetTheHighestScore()
         {
-            return GetAllScores()?.OrderBy(a => a.Item1).FirstOrDefault() ?? default;
+            return GetAllScores()?.FirstOrDefault() ?? default;
         }
 
         public static Vector3 FindRandomPositionOnNavMesh(this Vector3 currentPosition, float radius)

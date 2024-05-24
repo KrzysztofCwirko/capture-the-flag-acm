@@ -2,7 +2,6 @@
 using _Scripts.Utility;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace _Scripts.UI
@@ -46,7 +45,9 @@ namespace _Scripts.UI
             SwitchActiveSelf();
             resultText.text = won ? "SUCCESS" : "FAILURE";
             timeText.text = $"Time: {GameCore.GameTime.ToTime()}";
-            newHighScore.SetActive(won && GameCore.GameTime < Extensions.GetTheHighestScore().Item1);
+            var currentHighScoreRecord = Extensions.GetTheHighestScore();
+            var currentHighScore = currentHighScoreRecord == default ? float.MaxValue : currentHighScoreRecord.Item1;
+            newHighScore.SetActive(won && GameCore.GameTime < currentHighScore);
             
             foreach (var color in resultColors)
             {

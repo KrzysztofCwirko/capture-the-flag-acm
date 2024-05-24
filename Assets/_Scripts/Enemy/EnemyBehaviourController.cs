@@ -45,7 +45,7 @@ namespace _Scripts.Enemy
 
         private void Update()
         {
-            if(Time.timeScale <= 0.001f) return;    //paused
+            if(GameCore.GamePaused) return;
             var playerTransform = PlayerLifecycleController.Instance.transform;
             foreach (var enemy in _enemies)
             {
@@ -112,7 +112,7 @@ namespace _Scripts.Enemy
         
         private void OnFlagTaken()
         {
-           
+           //for example force all enemies to see the player
         }
 
         #endregion
